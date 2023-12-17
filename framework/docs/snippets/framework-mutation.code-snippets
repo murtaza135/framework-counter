@@ -1,0 +1,17 @@
+{
+	"Framework Mutation": {
+		"scope": "javascript,typescript",
+		"prefix": "frmut",
+		"body": [
+			"import { api } from '@/api/api';",
+			"",
+			"export const $TM_FILENAME_BASE = (${2:optionalarguments}) => ({",
+			"\tmutationFn: (data) => api.${1|post,put,patch,delete,get|}(\"${3:api-route}\", { json: data }).json(),",
+			"\tinvalidateTags: [\"${4}\"], // enter list of QUERY tags to invalidate",
+			"\ttransformer: (data) => { return ${5:data}; } // OPTIONAL: change return as needed, or delete",
+			"});",
+			""
+		],
+		"description": "Setup a framework mutation"
+	}
+}

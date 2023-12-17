@@ -3,13 +3,12 @@ import { BaseComponent } from '../dom/BaseComponent';
 import { html } from '../dom/html';
 
 export class Navigate extends BaseComponent {
-  static observedAttributes = ["to"];
-  private to?: string;
+  static observedAttributes = ["href"];
+  private href?: string;
 
   constructor() {
     super();
-    this.to = this.attr("to", String);
-    console.log("lol");
+    this.href = this.attr("href", String);
   }
 
   render() {
@@ -17,9 +16,9 @@ export class Navigate extends BaseComponent {
   }
 
   effect() {
-    if (!this.to)
-      throw new Error("Must provide the 'to' attribute to be able to navigate");
-    history.replace(this.to);
+    if (!this.href)
+      throw new Error("Must provide the 'href' attribute to be able to navigate");
+    history.replace(this.href);
   }
 }
 

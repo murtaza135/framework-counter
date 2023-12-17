@@ -1,0 +1,17 @@
+{
+	"Framework Query": {
+		"scope": "javascript,typescript",
+		"prefix": "frquery",
+		"body": [
+			"import { api } from '@/api/api';",
+			"",
+			"export const $TM_FILENAME_BASE = (${1:optionalarguments}) => ({",
+			"\tqueryFn: () => api.get(\"${2:api-route}\").json(),",
+			"\ttag: \"${3}\", // enter identity tag",
+			"\ttransformer: (data) => { return ${4:data}; } // OPTIONAL: change return as needed, or delete",
+			"});",
+			""
+		],
+		"description": "Setup a framework query"
+	}
+}

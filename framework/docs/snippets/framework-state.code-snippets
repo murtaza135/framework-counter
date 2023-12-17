@@ -1,0 +1,24 @@
+{
+	"Framework State": {
+		"scope": "javascript,typescript",
+		"prefix": "frstate",
+		"body": [
+			"import { StateSlice } from 'framework';",
+			"",
+			"export class $TM_FILENAME_BASE extends StateSlice {",
+			"\tconstructor() {",
+			"\t\tconst state = {",
+			"\t\t\t$0",
+			"\t\t};",
+			"",
+			"\t\tsuper(state);",
+			"\t}",
+			"",
+			"\t/* create methods below to act upon the state */",
+			"",
+			"}",
+			""
+		],
+		"description": "Create a framework StateSlice subclass"
+	}
+}
