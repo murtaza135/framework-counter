@@ -5,12 +5,15 @@
 - [Setup Routes](#setup-routes)
 - [Creating custom pages and components](#creating-custom-pages-and-components)
 - [Attributes](#attributes)
+- [Children HTML](#children-html)
 - [Interactivity through local state](#interactivity-through-local-state)
+- [Refs](#refs)
 - [Interactivity through global client state](#interactivity-through-global-client-state)
 - [Interactivity through global server state](#interactivity-through-global-server-state)
 - [The Router](#the-router)
 - [Code Snippets](#code-snippets)
 - [VSCode Extensions](#vscode-extensions)
+- [Example](#example)
 - [Final Remarks](#final-remarks)
 
 <br>
@@ -90,7 +93,7 @@ export class MainPage extends BaseComponent {
   render() {
     return html`
       <div class="some-classes-for-styling">
-        <counter />
+        <x-counter />
       </div>
     `;
   }
@@ -108,11 +111,13 @@ createComponents({
   "main-page": MainPage
 });
 ```
-The above code will associate `<main-apge />` with the MainPage component.
+The above code will associate `<main-page />` with the MainPage component.
+
+The name of components must have atleast 2 words, separated by a dash (-). If your component is a single word, then adding something like an "x-" prefix would be fine. For example, if your component is called `Counter`, then when registering the component with the application, you should call it `x-counter`
 
 <br>
 
-If you saw above, we used `<counter />` component inside `<main-page />`. So we now need to define this component.
+If you saw above, we used an `<x-counter />` component inside `<main-page />`. So we now need to define this component.
 ```javascript
 // Counter.js
 import { BaseComponent, html } from 'framework';
@@ -140,7 +145,7 @@ import { Counter } from "./Counter"
 
 createComponents({
   "main-page": MainPage,
-  "counter": Counter
+  "x-counter": Counter
 });
 ```
 
@@ -149,7 +154,7 @@ createComponents({
 #### Attributes
 Lets say we wanted to add an initial value for our counter. We can do this through attributes. But what are attributes?
 ```html
-<counter initial="0" />
+<x-counter initial="0" />
 ```
 The `initial="0"` is an attribute of `<counter />`.
 
@@ -214,6 +219,62 @@ You're free to create your own custom converter functions of the form:
 
 <br>
 
+#### Children HTML
+What is Children HTML?
+```html
+<x-container>
+  <p>all elements that go inside here are known as children HTML.</p>
+  <element-two />
+  <element-three />
+  <element-four />
+  <element-five />
+  ...
+</x-container>
+```
+Let's say we wanted to create a container component that has some default styles and other premade elements, and we want to put all our child elements inside that. Then we can do the following:
+```javascript
+// Container.js
+import { BaseComponent, html, converter } from 'framework';
+
+export class Container extends BaseComponent {
+  constructor() {
+    super();
+  }
+
+  render() {
+    return html`
+      <div class="classes-for-styling">
+        <premade-element-one />
+        <premade-element-two />
+
+        <!-- using this.childrenHTML, you can access the children HTML -->
+        ${this.childrenHTML}
+
+        <premade-element-three />
+        <premade-element-four />
+      </div>
+    `;
+  }
+}
+```
+
+```javascript
+// main.js
+import { Container } from "./Container"
+
+...
+
+createComponents({
+  "main-page": MainPage,
+  "x-counter": Counter,
+  "x-container": Container
+});
+```
+
+The children will now appear inside `<div class="classes-for-styling">`, sandwhiched between the `premade-elements`.
+
+<br>
+
 #### Interactivity through local state
 We still need to make our counter interactive. Let's add a way to increment the number when we click a button.
 ```javascript
@@ -258,7 +319,12 @@ Adding local state will manage the html for us. Every time the state's value cha
 
 <br>
 
-There is a second way to set up event listeners, but this way is strongly discouraged as it adds an unnecessary number of extra code to manage, as well as some other performance concerns.
+#### Refs
+If you saw above, we attached an event listener to the button using the `@click` handler:
+```html
+<button @click="${() => this.increment()}">+</button>
+```
+But what if we wanted full access to the button element? We can use refs to achieve the same thing and more. Here is the above example, but instead adding an event listener through refs:
 ```javascript
 import { BaseComponent, html, converter } from 'framework';
 
@@ -268,8 +334,8 @@ export class Counter extends BaseComponent {
     this.initialValue = this.attr("initial", converter.number);
     this.counter = this.state(this.initialValue);
 
-    // generate an ID for the button
-    this.buttonId = this.generateId();
+    // create ref for button
+    this.buttonRef = this.ref();
   }
 
   render() {
@@ -277,8 +343,8 @@ export class Counter extends BaseComponent {
       <div>
         <p>${this.counter.state}</p>
 
-        <!-- add the generated ID to the button -->
-        <button id="${this.buttonId}">+</button>
+        <!-- attach a "ref ID" to the button -->
+        <button id="${this.buttonRef.id}">+</button>
       </div>
     `;
   }
@@ -287,8 +353,10 @@ export class Counter extends BaseComponent {
   // and its purpose is to add event listeners to the html,
   // a process known as hydration
   hydrate() {
-    // extract the button from the DOM using the generated ID
-    const button = this.querySelector(`#${this.buttonId}`);
+    // access the button element via buttonRef.element
+    const button = this.buttonRef.element;
+
+    // ... do whatever you like with the button
 
     // setup a click event listener on the button that calls increment()
     this.addEventListenerToElement(button, "click", () => this.increment());
@@ -297,8 +365,10 @@ export class Counter extends BaseComponent {
   increment() {
     this.counter.state++;
   }
+}
 ```
 
+If all you need to do is attach a simple event listener, then `@click`, `@submit`, etc, is the way to go. However, if you need more control, then using a `ref` would be suitable. **Refs are very handy when trying to extract values from user inputs.**
 <br>
 
 #### Interactivity through global client state
@@ -560,6 +630,11 @@ There are a number of extensions that will make your life easier when using VSCo
 3. [lit-html](https://marketplace.visualstudio.com/items?itemName=bierner.lit-html): HTML syntax highlighting in JavaScript
 4. [vscode-styled-components](https://marketplace.visualstudio.com/items?itemName=styled-components.vscode-styled-components): CSS syntax highlighting in JavaScript
 5. [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint): Checks your code for syntax errors and other things based upon a config file, leading to more clean and robust code
+
+<br>
+
+#### Example
+I've created an example application that uses Framework. Have a look at it [here](https://github.com/murtaza135/framework-counter).
 
 <br>
 

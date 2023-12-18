@@ -7,6 +7,11 @@ import { stateManager } from '../state/StateManager';
 
 type Unsubscriber = () => void;
 
+type Ref = {
+  id: string;
+  element: Element | null;
+};
+
 type QueryMethodArgs<T = any> = {
   queryFn: QueryFunction,
   tag: string,
@@ -23,6 +28,7 @@ export class BaseComponent extends HTMLElement {
   static observedAttributes: string[] = [];
 
   protected childrenHTML: string;
+  private refs: Ref[];
   private eventListenerUnsubscriberFunctions: Unsubscriber[];
   private stateUnsubscriberFunctions: Unsubscriber[];
 
@@ -30,6 +36,7 @@ export class BaseComponent extends HTMLElement {
     super();
     this.childrenHTML = this.innerHTML;
 
+    this.refs = [];
     this.eventListenerUnsubscriberFunctions = [];
     this.stateUnsubscriberFunctions = [];
   }
@@ -51,6 +58,7 @@ export class BaseComponent extends HTMLElement {
   private update() {
     this.dehydrate();
     render(this, this.render());
+    this.attachRefs();
     this.hydrate();
     this.effect();
   }
@@ -58,6 +66,13 @@ export class BaseComponent extends HTMLElement {
   private dehydrate() {
     this.eventListenerUnsubscriberFunctions.forEach(fn => fn());
     this.eventListenerUnsubscriberFunctions.splice(0);
+  }
+
+  private attachRefs() {
+    this.refs.forEach(({ id }, index, array) => {
+      const element = this.querySelector(`#${id}`);
+      array[index].element = element;
+    });
   }
 
   private unsubscribe() {
@@ -83,6 +98,45 @@ export class BaseComponent extends HTMLElement {
     element.addEventListener(event, handler, options);
     const unsubscribe = () => element.removeEventListener(event, handler, options);
     this.eventListenerUnsubscriberFunctions.push(unsubscribe);
+  }
+
+  /**
+   * generate a random ID in order to give html tags an ID
+   * @param name optional name of ID
+   * @returns random ID
+   */
+  protected getId(name?: string) {
+    if (name) {
+      return `${name}-${crypto.randomUUID()}`;
+    } else {
+      return `${this.constructor.name}-${crypto.randomUUID()}`;
+    }
+  }
+
+  /**
+   * Allows you to give a html element a ref id, then after rendering,
+   * that element can be accessed directly through the ref.element property
+   * @param name optional name of ref ID
+   * @returns a Ref object with { id, element }
+   */
+  protected ref(name?: string) {
+    const id = this.getId(name);
+    const ref: Ref = { id, element: null };
+    this.refs.push(ref);
+    return ref;
+  }
+
+  /**
+   * Allows you to get the ref ID that the parent element set on the current element,
+   * this is useful if you want to attach the ref onto a sub-element, rather than on
+   * the current element itself
+   * @returns the Ref object that the parent set
+   */
+  protected getRef() {
+    const id = this.getAttribute("id") ?? '';
+    this.removeAttribute("id");
+    const ref: Omit<Ref, "element"> = { id };
+    return ref;
   }
 
   /**
@@ -153,19 +207,6 @@ export class BaseComponent extends HTMLElement {
       state: mutation.state as MutationStateValue<T>,
       actions: { mutate }
     } as const;
-  }
-
-  /**
-   * generate a random ID in order to give html tags an ID
-   * @param name optional name of tag
-   * @returns random ID
-   */
-  protected generateId(name?: string) {
-    if (name) {
-      return `${name}-${crypto.randomUUID()}`;
-    } else {
-      return `${this.constructor.name}-${crypto.randomUUID()}`;
-    }
   }
 
   /**

@@ -9,7 +9,7 @@ export class CounterOne extends BaseComponent {
   constructor() {
     super();
     this.counter = this.state(0);
-    this.buttonId = this.generateId();
+    this.buttonId = this.getId();
   }
 
   render() {
