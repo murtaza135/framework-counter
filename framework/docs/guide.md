@@ -368,7 +368,7 @@ export class Counter extends BaseComponent {
 }
 ```
 
-If all you need to do is attach a simple event listener, then `@click`, `@submit`, etc, is the way to go. However, if you need more control, then using a `ref` would be suitable. **Refs are very handy when trying to extract values from user inputs.**
+If all you need to do is attach a simple onclick event listener, then `@click` is the way to go. However, if you need more control, then using a `ref` would be suitable. **Refs are very handy when trying to extract values from user inputs and submitting forms.**
 <br>
 
 #### Interactivity through global client state

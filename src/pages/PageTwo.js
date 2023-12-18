@@ -12,6 +12,7 @@ export class PageTwo extends BaseComponent {
         <counter-two />
         <counter-three />
         <custom-link href="/" text="Go to main page" />
+        <custom-link href="/form" text="Go to form page" />
       </div>
     `;
   }
