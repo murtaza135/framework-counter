@@ -10,6 +10,7 @@
 - [Interactivity through global server state](#interactivity-through-global-server-state)
 - [The Router](#the-router)
 - [Code Snippets](#code-snippets)
+- [VSCode Extensions](#vscode-extensions)
 - [Final Remarks](#final-remarks)
 
 <br>
@@ -548,6 +549,17 @@ I have created a number of snippets to help with the boilerplate. You can find t
 - [Mutation](./snippets/framework-mutation.code-snippets)
 
 We can change these snippets as needed later. Let me know if you want help to set them up.
+
+<br>
+
+#### VSCode Extensions
+There are a number of extensions that will make your life easier when using VSCode:
+
+1. [HTML CSS Support](https://marketplace.visualstudio.com/items?itemName=ecmel.vscode-html-css): additional QoL features for HTML and CSS
+2. [Auto Rename Tag](https://marketplace.visualstudio.com/items?itemName=formulahendry.auto-rename-tag): When renaming a tag, this will automatically rename the other end of the tag
+3. [lit-html](https://marketplace.visualstudio.com/items?itemName=bierner.lit-html): HTML syntax highlighting in JavaScript
+4. [vscode-styled-components](https://marketplace.visualstudio.com/items?itemName=styled-components.vscode-styled-components): CSS syntax highlighting in JavaScript
+5. [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint): Checks your code for syntax errors and other things based upon a config file, leading to more clean and robust code
 
 <br>
 
