@@ -9,7 +9,7 @@ export class CustomLink extends BaseComponent {
 
   render() {
     return html`
-      <x-link href="${this.href}" class="btn btn-light fs-3 px-3">${this.text}</x-link>
+      <x-link href="${this.href}" class="btn btn-light px-3">${this.text}</x-link>
     `;
   }
 }

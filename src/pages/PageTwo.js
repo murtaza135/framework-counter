@@ -11,8 +11,11 @@ export class PageTwo extends BaseComponent {
         <counter-one />
         <counter-two />
         <counter-three />
-        <custom-link href="/" text="Go to main page" />
-        <custom-link href="/form" text="Go to form page" />
+
+        <div class="d-flex gap-2">
+          <custom-link href="/" text="Page One" />
+          <custom-link href="/form" text="Form Page" />
+        </div>
       </div>
     `;
   }
